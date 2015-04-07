@@ -12,10 +12,17 @@
     "merge": "^1.2.0"
   },
   "devDependencies": {
+    "blanket": "^1.1.6",
     "chai": "^2.2.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.1",
     "grunt-mocha-test": "^0.12.7",
-    "mocha": "^2.2.1"
+    "mocha": "^2.2.1",
+    "travis-cov": "^0.2.5"
+  },
+  "config": {
+    "travis-cov": {
+      "threshold": 95
+    }
   }
 }

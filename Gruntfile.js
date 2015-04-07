@@ -6,6 +6,21 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     reporter: 'spec',
+                    require: './blanket-config'
+                },
+                src: ['tests/**/*.js']
+            },
+            'html-cov': {
+                options: {
+                    reporter: 'html-cov',
+                    quiet: true,
+                    captureFile: 'coverage/coverage.html'
+                },
+                src: ['tests/**/*.js']
+            },
+            'travis-cov': {
+                options: {
+                    reporter: 'travis-cov'
                 },
                 src: ['tests/**/*.js']
             }
@@ -22,5 +37,4 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.registerTask('test', ['mochaTest', 'jshint']);
-    grunt.registerTask('test-only', ['mochaTest']);
 };
