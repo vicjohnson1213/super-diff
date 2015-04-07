@@ -1,0 +1,6 @@
+a diff
+tool test
+file
+for that
+some has more than one word per line
+stuff
