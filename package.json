@@ -1,13 +1,23 @@
 {
   "name": "super-diff",
   "version": "0.0.1",
-  "description": "A text diff library for node.\"",
+  "description": "A javascrirpt text diff tool built for node.",
   "main": "diff.js",
+  "keywords": [
+    "diff",
+    "text",
+    "difftool",
+    "difference"
+  ],
   "scripts": {
     "test": "grunt test"
   },
   "author": "Victor Johnson",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vicjohnson1213/super-diff"
+  },
   "dependencies": {
     "merge": "^1.2.0"
   },

@@ -57,7 +57,7 @@ function buildDiff(LCSMatrix, original, modified) {
     while(true) {
         if (i > 0 && j > 0 && original[i - 1] === modified[j - 1]) {
             result.splice(0, 0, {
-                data: original[i - 1],
+                value: original[i - 1],
                 similar: true,
                 originalPos: i - 1,
                 newPos: i - 1
@@ -67,7 +67,7 @@ function buildDiff(LCSMatrix, original, modified) {
             j--;
         } else if (j > 0 && (i === 0 || LCSMatrix[i][j - 1] >= LCSMatrix[i - 1][j])) {
             result.splice(0, 0, {
-                data: modified[j - 1],
+                value: modified[j - 1],
                 added: true,
                 originalPos: -1,
                 newPos: j - 1
@@ -76,7 +76,7 @@ function buildDiff(LCSMatrix, original, modified) {
             j--;
         } else if (i > 0 && (j === 0 || LCSMatrix[i][j - 1] < LCSMatrix[i - 1][j])) {
             result.splice(0, 0, {
-                data: original[i - 1],
+                value: original[i - 1],
                 removed: true,
                 originalPos: i - 1,
                 newPos: -1
@@ -90,15 +90,21 @@ function buildDiff(LCSMatrix, original, modified) {
 
     var diff = {
         diff: result,
-        added: result.filter(function(el) {
-            return el.added;
-        }),
-        removed: result.filter(function(el) {
-            return el.removed;
-        }),
-        similar: result.filter(function(el) {
-            return el.similar;
-        })
+        added: function() {
+            return result.filter(function(el) {
+                return el.added;
+            });
+        },
+        removed: function() {
+            return result.filter(function(el) {
+                return el.removed;
+            });
+        },
+        similar: function() {
+            return result.filter(function(el) {
+                return el.similar;
+            });
+        }
     };
 
     return diff;

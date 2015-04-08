@@ -3,16 +3,16 @@ var expect = require('chai').expect,
     fs = require('fs'),
     path = require('path');
 
-describe('text-diff', function() {
+describe('super-diff', function() {
     it('should diff chars if given a string', function() {
         var res = diff.buildDiff('test', 'feast', {
             scope: 'chars'
         });
 
         expect(res.diff.length).to.equal(6);
-        expect(res.added.length).to.equal(2);
-        expect(res.removed.length).to.equal(1);
-        expect(res.similar.length).to.equal(3);
+        expect(res.added().length).to.equal(2);
+        expect(res.removed().length).to.equal(1);
+        expect(res.similar().length).to.equal(3);
     });
 
     it('should diff text in arrays', function() {
@@ -24,9 +24,9 @@ describe('text-diff', function() {
             });
 
         expect(res.diff.length).to.equal(9);
-        expect(res.added.length).to.equal(3);
-        expect(res.removed.length).to.equal(3);
-        expect(res.similar.length).to.equal(3);
+        expect(res.added().length).to.equal(3);
+        expect(res.removed().length).to.equal(3);
+        expect(res.similar().length).to.equal(3);
     });
 
     it('should work on loading files', function() {
@@ -38,9 +38,9 @@ describe('text-diff', function() {
         });
 
         expect(res.diff.length).to.equal(10);
-        expect(res.added.length).to.equal(4);
-        expect(res.removed.length).to.equal(5);
-        expect(res.similar.length).to.equal(1);
+        expect(res.added().length).to.equal(4);
+        expect(res.removed().length).to.equal(5);
+        expect(res.similar().length).to.equal(1);
     });
 
     it('should work on words', function() {
@@ -53,8 +53,8 @@ describe('text-diff', function() {
         });
 
         expect(res.diff.length).to.equal(21);
-        expect(res.added.length).to.equal(5);
-        expect(res.removed.length).to.equal(8);
-        expect(res.similar.length).to.equal(8);
+        expect(res.added().length).to.equal(5);
+        expect(res.removed().length).to.equal(8);
+        expect(res.similar().length).to.equal(8);
     });
 });
