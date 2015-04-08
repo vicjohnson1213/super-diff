@@ -2,29 +2,6 @@
 
 var merge = require('merge');
 
-module.exports = {
-    buildDiff: function(orig, mod, opts) {
-        var options = merge({
-            scope: 'lines',
-            array: false
-        }, opts);
-
-        var original = orig;
-        var modified = mod;
-
-        if (!options.array && options.scope === 'lines') {
-            original = orig.split('\n');
-            modified = mod.split('\n');
-        } else if (!options.array && options.scope === 'words') {
-            original = orig.split(/\s/);
-            modified = mod.split(/\s/);
-        }
-
-        return buildDiff(buildLCS(original, modified), original, modified);
-    }
-};
-
-
 function buildLCS(original, modified) {
     var LCSMatrix = [];
 
@@ -109,3 +86,25 @@ function buildDiff(LCSMatrix, original, modified) {
 
     return diff;
 }
+
+module.exports = {
+    buildDiff: function(orig, mod, opts) {
+        var options = merge({
+            scope: 'lines',
+            array: false
+        }, opts);
+
+        var original = orig;
+        var modified = mod;
+
+        if (!options.array && options.scope === 'lines') {
+            original = orig.split('\n');
+            modified = mod.split('\n');
+        } else if (!options.array && options.scope === 'words') {
+            original = orig.split(/\s/);
+            modified = mod.split(/\s/);
+        }
+
+        return buildDiff(buildLCS(original, modified), original, modified);
+    }
+};
