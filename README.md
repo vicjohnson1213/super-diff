@@ -32,12 +32,12 @@ result.diff.forEach(function(chunk) {
 
 #### The diff.buildDiff Function
 
-The `buildDiff` function of super-diff will compute the differences between two text blocks. This function returns an object describing the results of the operation.
+The `buildDiff` function of super-diff will compute the differences between two text blocks and return an object describing the results of the operation.
 
 *Return value:*
 ```javascript
 {
-  diff: [] // See "The Diff Array of Each Chunk" section
+  diff: [] // See "The Diff Array of Each Chunk" section.
   added: function() // Returns an array of all chunks that were added.
   removed: function() // Returns an array of all chunks that were removed.
   similar: function() // Returns an array of all chunks that remained the same.
@@ -46,7 +46,7 @@ The `buildDiff` function of super-diff will compute the differences between two 
 
 #### The Diff Array of Each Chunk
 
-In the return value of the `buldDiff` function, there is a `diff` array that contains each chunk of data (char, word, or line) and information about it's change between the two text blocks.
+In the return value of the `buildDiff` function, there is a `diff` array that contains objects describing each chunk of data (char, word, line, or array element) and information about its difference between the two text blocks.
 
 *Diff object structure:*
 ```javascript
@@ -64,7 +64,7 @@ In the return value of the `buldDiff` function, there is a `diff` array that con
 
 The `buildDiff` function takes an options object to control the behavior of the diff computation.
 
-Options should be passed to super-diff like this:
+*Options syntax (with defaults shown):*
 
 ```javascript
 var result = diff.buildDiff(originalText, modifiedText, {
@@ -85,13 +85,14 @@ Specifies which parts of the text block to compare.
 
 #### isArray: Boolean (default: false)
 
-Specifies whether the text will be sent in arrays.  If the contents of each text block are already split into arrays, the scope of the diff will default to the elements of the array, bypassing the `scope` option.
+Specifies whether the text is already split into arrays.  If the contents of each text block are already split into arrays, the scope of the diff will default to the elements of the array, ignoring the `scope` option.
 
 *Example usage:*
 ```javascript
 var original = ['this', 'is', 'some', 'text'];
 var modified = ['this', 'is', 'different', 'text', 'than', 'before'];
-var res = diff.buildDiff(original, modified, {
+
+var result = diff.buildDiff(original, modified, {
     isArray: true
 });
 ```
@@ -100,6 +101,17 @@ var res = diff.buildDiff(original, modified, {
 
 Specifies whether or not to include leading/trailing whitespace in the comparison of each chunk of data.
 
+*Example:*
+```javascript
+var noWhitespace = 'some text here';
+var whitespace = '  some text here       ';
+
+var result = diff.buildDiff(noWhitespace, whitespace, {
+    trimWhitespace: true
+});
+
+// result will show no difference between these two text blocks.
+```
 ## Contributing
 
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code.
