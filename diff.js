@@ -37,7 +37,7 @@ function buildDiff(LCSMatrix, original, modified) {
                 value: original[i - 1],
                 similar: true,
                 originalPos: i - 1,
-                newPos: i - 1
+                newPos: j - 1
             });
 
             i--;
@@ -104,15 +104,23 @@ module.exports = {
         var original = orig;
         var modified = mod;
 
+        if (!options.isArray) {
 
-        if (!options.isArray && options.scope === 'lines') {
-            original = orig.split('\n');
-            modified = mod.split('\n');
-        } else if (!options.isArray && options.scope === 'words') {
-            original = orig.split(/\s/);
-            modified = mod.split(/\s/);
-        } else if (options.isArray || options.scope === 'chars') {
-            // chars/arrays can be accessed by string[idx]/arr[idx], so not much to do here for now.
+            switch (options.scope) {
+                case 'words':
+                    original = orig.split(/\s/);
+                    modified = mod.split(/\s/);
+                    break;
+                case 'chars':
+                    // chars can be accessed by string[idx], so not much to do here for now,
+                    // but there may be something to do in the future.
+                    break;
+                default:
+                    // Default the scope of the diff to lines
+                    original = orig.split('\n');
+                    modified = mod.split('\n');
+                    break;
+            }
         }
 
         if (options.trimWhitespace) {

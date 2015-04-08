@@ -1,0 +1,4 @@
+first line
+different line
+third line
+added line
