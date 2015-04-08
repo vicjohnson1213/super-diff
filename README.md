@@ -1,6 +1,6 @@
 # Super-Diff [![Build Status](https://travis-ci.org/vicjohnson1213/super-diff.svg)](https://travis-ci.org/vicjohnson1213/super-diff)
 
->Super-Diff is a node.js library to calculate the difference between two text blocks.
+>Super-Diff is a node.js library to compute the difference between two text blocks, offering flexibility and many configuration options.
 
 ## Getting Started
 
@@ -17,49 +17,88 @@ var diff = require('super-diff');
 
 var result = diff.buildDiff(originalText, modifiedText);
 
-result.diff.forEach(function(line) {
-    if (line.added) {
-        console.log('+ ' + line.value);
-    } else if (line.removed) {
-        console.log('- ' + line.value);
-    } else {
-        console.log('  ' + line.value);
-    }
+result.diff.forEach(function(chunk) {
+
+  // Prints a basic line diff between originalText and modifiedText
+  if (chunk.added) {
+    console.log('+ ' + chunk.value);
+  } else if (chunk.removed) {
+    console.log('- ' + chunk.value);
+  } else {
+    console.log('  ' + chunk.value);
+  }
 });
 ```
 
-## Options
+#### The diff.buildDiff Function
 
-Options should be passes to Super-Diff like this:
+The `buildDiff` function of super-diff will compute the differences between two text blocks. This function returns an object describing the results of the operation.
+
+*Return value:*
+```javascript
+{
+  diff: [] // See "The Diff Array of Each Chunk" section
+  added: function() // Returns an array of all chunks that were added.
+  removed: function() // Returns an array of all chunks that were removed.
+  similar: function() // Returns an array of all chunks that remained the same.
+}
+```
+
+#### The Diff Array of Each Chunk
+
+In the return value of the `buldDiff` function, there is a `diff` array that contains each chunk of data (char, word, or line) and information about it's change between the two text blocks.
+
+*Diff object structure:*
+```javascript
+{
+  value: string // The actual text from this chunk of data.
+  added: boolean // True if this chunk was added, undefined otherwise.
+  removed: boolean // True if this chunk was remove, undefined otherwise.
+  similar: boolean // True if this chunk stayed the same, undefined otherwise.
+  originalPos: int // Position of this chunk in the original text, -1 if it didn't exist.
+  newPos: int // Position of this chunk in the modified text, -1 if it doesn't exist.
+}
+```
+
+## BuildDiff Options
+
+The `buildDiff` function takes an options object to control the behavior of the diff computation.
+
+Options should be passed to super-diff like this:
 
 ```javascript
 var result = diff.buildDiff(originalText, modifiedText, {
-    scope: 'lines',
-    array: false
+  scope: 'lines',
+  isArray: false,
+  trimWhitespace: false
 });
 ```
+
 #### scope: String (default: `'lines'`)
 
-Specifies the what parts of the document to compare.  
+Specifies which parts of the text block to compare.
 
 *Valid scopes:*
-* `'lines'`: Check for differences in the lines of the text.
-* `'words'`: Check for differences in the words of the text, **whitespace is significant.**
-* `'chars'`: Check for differences in the characters of the text.
+* `'lines'`: Check for differences in the lines of the text. (separates by `'\n'`)
+* `'words'`: Check for differences in the words of the text. (separates by `/\s/`)
+* `'chars'`: Check for differences in the characters of the text. (separates by `''`)
 
+#### isArray: Boolean (default: false)
 
-#### array: Boolean (default: false)
-
-Specifies whether the text will be sent in arrays.  If the contents of each text block are arrays, the scope of the diff will be the elements of the array, not `'lines'`, `'words'`, or `'chars'`.
+Specifies whether the text will be sent in arrays.  If the contents of each text block are already split into arrays, the scope of the diff will default to the elements of the array, bypassing the `scope` option.
 
 *Example usage:*
 ```javascript
 var original = ['this', 'is', 'some', 'text'];
 var modified = ['this', 'is', 'different', 'text', 'than', 'before'];
 var res = diff.buildDiff(original, modified, {
-    array: true
+    isArray: true
 });
 ```
+
+#### trimWhitespace: Boolean (default: false)
+
+Specifies whether or not to include leading/trailing whitespace in the comparison of each chunk of data.
 
 ## Contributing
 

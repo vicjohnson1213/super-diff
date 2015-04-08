@@ -87,22 +87,37 @@ function buildDiff(LCSMatrix, original, modified) {
     return diff;
 }
 
+function trimWhitespace(arr) {
+    return arr.map(function(el) {
+        return el.trim();
+    });
+}
+
 module.exports = {
     buildDiff: function(orig, mod, opts) {
         var options = merge({
             scope: 'lines',
-            array: false
+            isArray: false,
+            trimWhitespace: false
         }, opts);
 
         var original = orig;
         var modified = mod;
 
-        if (!options.array && options.scope === 'lines') {
+
+        if (!options.isArray && options.scope === 'lines') {
             original = orig.split('\n');
             modified = mod.split('\n');
-        } else if (!options.array && options.scope === 'words') {
+        } else if (!options.isArray && options.scope === 'words') {
             original = orig.split(/\s/);
             modified = mod.split(/\s/);
+        } else if (options.isArray || options.scope === 'chars') {
+            // chars/arrays can be accessed by string[idx]/arr[idx], so not much to do here for now.
+        }
+
+        if (options.trimWhitespace) {
+            original = trimWhitespace(original);
+            modified = trimWhitespace(modified);
         }
 
         return buildDiff(buildLCS(original, modified), original, modified);
