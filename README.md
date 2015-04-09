@@ -1,4 +1,6 @@
-# Super-Diff [![Build Status](https://travis-ci.org/vicjohnson1213/super-diff.svg)](https://travis-ci.org/vicjohnson1213/super-diff)
+# Super-Diff
+
+[![Build Status](https://travis-ci.org/vicjohnson1213/super-diff.svg)](https://travis-ci.org/vicjohnson1213/super-diff) [![Dependencies](https://david-dm.org/vicjohnson1213/super-diff.svg)](https://david-dm.org/vicjohnson1213/super-diff) [![devDependency Status](https://david-dm.org/vicjohnson1213/super-diff/dev-status.svg)](https://david-dm.org/vicjohnson1213/super-diff#info=devDependencies)
 
 >Super-Diff is a node.js library to compute the difference between two text blocks, offering flexibility and many configuration options.
 
