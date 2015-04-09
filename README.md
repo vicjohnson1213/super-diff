@@ -96,7 +96,7 @@ Specifies which parts of the text block to compare.
 
 Specifies whether the text is already split into arrays.  If the contents of each text block are already split into arrays, the scope of the diff will default to the elements of the array, ignoring the `scope` option.
 
-*Example usage:*
+*Example:*
 
 ```javascript
 var original = ['this', 'is', 'some', 'text'];
@@ -158,6 +158,12 @@ var result = diff.buildDiff(original, modified, {
 ## Contributing
 
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code.
+
+#### Running unit tests:
+
+running `grunt test` will run all of the unit tests inside the `tests/` directory. For convenience, I have added a `grunt watch` task that will run all unit tests each time a test or source file is changed.
+
+I am striving to keep code coverage at 100% and linting errors to 0. For that reason, the unit tests are configured to fail on any coverage lower than 95% or on any linting errors.
 
 ## License
 
