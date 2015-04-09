@@ -116,9 +116,9 @@ module.exports = {
                     // but there may be something to do in the future.
                     break;
                 default:
-                    // Default the scope of the diff to lines
-                    original = orig.split('\n');
-                    modified = mod.split('\n');
+                    // Default the scope of the diff to 'lines'
+                    original = orig.split(/\n|\r\n|\r/);
+                    modified = mod.split(/\n|\r\n|\r/);
                     break;
             }
         }

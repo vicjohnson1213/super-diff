@@ -140,8 +140,8 @@ describe('super-diff', function() {
         });
 
         it('lines', function() {
-            var orig = 'words to diff\nanother line to diff';
-            var mod = 'word to not diff\nanother line to diff\na third line';
+            var orig = 'words to diff\r\nanother line to diff';
+            var mod = 'word to not diff\nanother line to diff\ra third line';
 
             var res = diff.buildDiff(orig, mod);
 
