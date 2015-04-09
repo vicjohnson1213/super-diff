@@ -30,11 +30,19 @@ module.exports = function(grunt) {
             options: {
                 jshintrc: true
             }
+        },
+        watch: {
+            files: ['diff.js', 'tests//**/*.js'],
+            tasks: ['test'],
+            options: {
+                debounceDelay: 1000
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('test', ['mochaTest', 'jshint']);
 };

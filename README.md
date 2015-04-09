@@ -15,6 +15,9 @@ npm install super-diff --save
 ```javascript
 var diff = require('super-diff');
 
+var originalText = 'some of your original text';
+var modifiedText = 'some of your modified text';
+
 var result = diff.buildDiff(originalText, modifiedText);
 
 result.diff.forEach(function(chunk) {
@@ -35,6 +38,7 @@ result.diff.forEach(function(chunk) {
 The `buildDiff` function of super-diff will compute the differences between two text blocks and return an object describing the results of the operation.
 
 *Return value:*
+
 ```javascript
 {
   diff: [] // See "The Diff Array of Each Chunk" section.
@@ -49,6 +53,7 @@ The `buildDiff` function of super-diff will compute the differences between two 
 In the return value of the `buildDiff` function, there is a `diff` array that contains objects describing each chunk of data (char, word, line, or array element) and information about its difference between the two text blocks.
 
 *Diff object structure:*
+
 ```javascript
 {
   value: string // The actual text from this chunk of data.
@@ -60,6 +65,8 @@ In the return value of the `buildDiff` function, there is a `diff` array that co
 }
 ```
 
+**Note:** the `groups` option will change the structure of this object if it is set to true.  See the `groups` option section for details.
+
 ## BuildDiff Options
 
 The `buildDiff` function takes an options object to control the behavior of the diff computation.
@@ -70,6 +77,7 @@ The `buildDiff` function takes an options object to control the behavior of the 
 var result = diff.buildDiff(originalText, modifiedText, {
   scope: 'lines',
   isArray: false,
+  groups: false,
   trimWhitespace: false
 });
 ```
@@ -79,7 +87,8 @@ var result = diff.buildDiff(originalText, modifiedText, {
 Specifies which parts of the text block to compare.
 
 *Valid scopes:*
-* `'lines'`: Check for differences in the lines of the text. (separates by `'\n'`)
+
+* `'lines'`: Check for differences in the lines of the text. (separates by `/\n|\r\n|\r/`)
 * `'words'`: Check for differences in the words of the text. (separates by `/\s/`)
 * `'chars'`: Check for differences in the characters of the text. (separates by `''`)
 
@@ -88,12 +97,13 @@ Specifies which parts of the text block to compare.
 Specifies whether the text is already split into arrays.  If the contents of each text block are already split into arrays, the scope of the diff will default to the elements of the array, ignoring the `scope` option.
 
 *Example usage:*
+
 ```javascript
 var original = ['this', 'is', 'some', 'text'];
 var modified = ['this', 'is', 'different', 'text', 'than', 'before'];
 
 var result = diff.buildDiff(original, modified, {
-    isArray: true
+  isArray: true
 });
 ```
 
@@ -102,15 +112,48 @@ var result = diff.buildDiff(original, modified, {
 Specifies whether or not to include leading/trailing whitespace in the comparison of each chunk of data.
 
 *Example:*
+
 ```javascript
 var noWhitespace = 'some text here';
 var whitespace = '  some text here       ';
 
 var result = diff.buildDiff(noWhitespace, whitespace, {
-    trimWhitespace: true
+  trimWhitespace: true
 });
 
 // result will show no difference between these two text blocks.
+```
+
+#### groups: boolean (default: true)
+
+Specifies whether or not the results of the diff will be returned in groups of consecutive similar results.
+
+*Example:*
+
+```javascript
+var original = 'abcdg';
+var modified = 'abefg';
+
+var result = diff.buildDiff(original, modified, {
+  scope: 'chars',
+  groups: true
+});
+
+// The resulting diff object (stored in result.diff): 
+[ 
+  [ 
+    { value: 'a', similar: true, originalPos: 0, newPos: 0 },
+    { value: 'b', similar: true, originalPos: 1, newPos: 1 }
+  ], [
+    { value: 'c', removed: true, originalPos: 2, newPos: -1 },
+    { value: 'd', removed: true, originalPos: 3, newPos: -1 }
+  ], [
+    { value: 'e', added: true, originalPos: -1, newPos: 2 },
+    { value: 'f', added: true, originalPos: -1, newPos: 3 }
+  ], [
+    { value: 'g', similar: true, originalPos: 4, newPos: 4 }
+  ]
+]
 ```
 ## Contributing
 

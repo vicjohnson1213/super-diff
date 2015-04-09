@@ -25,61 +25,81 @@ function buildLCS(original, modified) {
     return LCSMatrix;
 }
 
-function buildDiff(LCSMatrix, original, modified) {
+function buildDiff(original, modified, groups) {
     var result = [],
         i = original.length,
-        j = modified.length;
-
+        j = modified.length,
+        LCSMatrix = buildLCS(original, modified);
 
     while(true) {
+        var chunk;
+
         if (i > 0 && j > 0 && original[i - 1] === modified[j - 1]) {
-            result.splice(0, 0, {
+            chunk = {
                 value: original[i - 1],
                 similar: true,
                 originalPos: i - 1,
                 newPos: j - 1
-            });
+            };
 
             i--;
             j--;
         } else if (j > 0 && (i === 0 || LCSMatrix[i][j - 1] >= LCSMatrix[i - 1][j])) {
-            result.splice(0, 0, {
+            chunk = {
                 value: modified[j - 1],
                 added: true,
                 originalPos: -1,
                 newPos: j - 1
-            });
+            };
 
             j--;
         } else if (i > 0 && (j === 0 || LCSMatrix[i][j - 1] < LCSMatrix[i - 1][j])) {
-            result.splice(0, 0, {
+            chunk = {
                 value: original[i - 1],
                 removed: true,
                 originalPos: i - 1,
                 newPos: -1
-            });
+            };
 
             i--;
         } else {
             break;
         }
+
+        // Since we are adding the new chunks to the front, result[0][0]
+        // is the latest addition.
+        if (groups) {
+            if (groups && result[0] && result[0][0] &&
+                ((result[0][0].added && chunk.added) ||
+                (result[0][0].removed && chunk.removed) ||
+                (result[0][0].similar && chunk.similar))) {
+
+                result[0].splice(0, 0, chunk);
+            continue;
+            }
+         
+            chunk = [chunk];
+        }
+
+        result.splice(0, 0, chunk);
+
     }
 
     var diff = {
         diff: result,
         added: function() {
             return result.filter(function(el) {
-                return el.added;
+                return groups ? el[0].added : el.added;
             });
         },
         removed: function() {
             return result.filter(function(el) {
-                return el.removed;
+                return groups ? el[0].removed : el.removed;
             });
         },
         similar: function() {
             return result.filter(function(el) {
-                return el.similar;
+                return groups ? el[0].similar : el.similar;
             });
         }
     };
@@ -95,10 +115,12 @@ function trimWhitespace(arr) {
 
 module.exports = {
     buildDiff: function(orig, mod, opts) {
+        // Overwrite the default options with any specified in opts
         var options = merge({
             scope: 'lines',
             isArray: false,
-            trimWhitespace: false
+            trimWhitespace: false,
+            groups: false
         }, opts);
 
         var original = orig;
@@ -128,6 +150,6 @@ module.exports = {
             modified = trimWhitespace(modified);
         }
 
-        return buildDiff(buildLCS(original, modified), original, modified);
+        return buildDiff(original, modified, options.groups);
     }
 };

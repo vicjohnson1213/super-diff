@@ -4,51 +4,6 @@ var expect = require('chai').expect,
     path = require('path');
 
 describe('super-diff', function() {
-    it('should work on loading files', function() {
-        var orig = fs.readFileSync(path.join(__dirname, 'test-file1.txt'), 'UTF-8');
-        var mod = fs.readFileSync(path.join(__dirname, 'test-file2.txt'), 'UTF-8');
-
-        var res = diff.buildDiff(orig, mod);
-
-
-        expect(res.added()).to.eql([
-            {
-                value: 'different line',
-                added: true,
-                originalPos: -1,
-                newPos: 1
-            }, {
-                value: 'added line',
-                added: true,
-                originalPos: -1,
-                newPos: 3
-            }
-        ]);
-
-        expect(res.removed()).to.eql([
-            {
-                value: 'second line',
-                removed: true,
-                originalPos: 1,
-                newPos: -1
-            }
-        ]);
-
-        expect(res.similar()).to.eql([
-            {
-                value: 'first line',
-                similar: true,
-                originalPos: 0,
-                newPos: 0
-            }, {
-                value: 'third line',
-                similar: true,
-                originalPos: 2,
-                newPos: 2
-            }
-        ]);
-    });
-
     describe('scopes', function() {
         it('chars', function() {
             var res = diff.buildDiff('test', 'atst', {
@@ -316,6 +271,73 @@ describe('super-diff', function() {
             ]);
 
             expect(res.similar()).to.eql([]);
+        });
+    });
+
+    describe('groups', function() {
+        it('true', function() {
+            var original = 'abcdg';
+            var modified = 'abefg';
+
+            var result = diff.buildDiff(original, modified, {
+                scope: 'chars',
+                groups: true
+            });
+
+            // Uses to check whether the added function is returning the correct thing
+            expect(result.similar().length).to.equal(2);
+            expect(result.diff[0]).to.eql([
+                {
+                    value: 'a',
+                    similar: true,
+                    originalPos: 0,
+                    newPos: 0
+                },  {
+                    value: 'b',
+                    similar: true,
+                    originalPos: 1,
+                    newPos: 1
+                }
+            ], [
+                {
+                    value: 'g',
+                    removed: true,
+                    originalPos: 4,
+                    newPos: 4
+                }
+            ]);
+
+            // Uses to check whether the removed function is returning the correct thing
+            expect(result.removed().length).to.equal(1);
+            expect(result.diff[1]).to.eql([
+                {
+                    value: 'c',
+                    removed: true,
+                    originalPos: 2,
+                    newPos: -1
+                }, {
+                    value: 'd',
+                    removed: true,
+                    originalPos: 3,
+                    newPos: -1
+                }
+            ]);
+
+            // Uses to check whether the similar function is returning the correct thing
+            expect(result.added().length).to.equal(1);
+            expect(result.diff[2]).to.eql([
+                {
+                    value: 'e',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 2
+                }, {
+                    value: 'f',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 3
+                }
+            ]);
         });
     });
 });
