@@ -1,7 +1,8 @@
 var expect = require('chai').expect,
     diff = require('../diff.js'),
     fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    os = require('os');
 
 describe('super-diff', function() {
     describe('scopes', function() {
@@ -290,12 +291,12 @@ describe('super-diff', function() {
 
             expect(res.added()).to.eql([
                 {
-                    value: 'different line\r\n',
+                    value: 'different line' + os.EOL,
                     added: true,
                     originalPos: -1,
                     newPos: 1
                 }, {
-                    value: 'third line\r\n',
+                    value: 'third line' + os.EOL,
                     added: true,
                     originalPos: -1,
                     newPos: 2
@@ -309,7 +310,7 @@ describe('super-diff', function() {
 
             expect(res.removed()).to.eql([
                 {
-                    value: 'second line\r\n',
+                    value: 'second line' + os.EOL,
                     removed: true,
                     originalPos: 1,
                     newPos: -1
@@ -323,7 +324,7 @@ describe('super-diff', function() {
 
             expect(res.similar()).to.eql([
                 {
-                    value: 'first line\r\n',
+                    value: 'first line' + os.EOL,
                     similar: true,
                     originalPos: 0,
                     newPos: 0
