@@ -113,6 +113,12 @@ function trimWhitespace(arr) {
     });
 }
 
+function removeWhiteSpace(arr) {
+    return arr.map(function(el) {
+        return el.replace(/(\n|\r\n|\r)$/, '');
+    });
+}
+
 module.exports = {
     buildDiff: function(orig, mod, opts) {
         // Overwrite the default options with any specified in opts
@@ -120,6 +126,7 @@ module.exports = {
             scope: 'lines',
             isArray: false,
             trimWhitespace: false,
+            ignoreLineEndings: false,
             groups: false
         }, opts);
 
@@ -139,8 +146,17 @@ module.exports = {
                     break;
                 default:
                     // Default the scope of the diff to 'lines'
-                    original = orig.split(/\n|\r\n|\r/);
-                    modified = mod.split(/\n|\r\n|\r/);
+                    original = orig.split(/^/m).map(function(el, idx, arr) {
+                        return (el[el.length - 1] === '\r' && arr[idx + 1] === '\n') ? el + '\n' : el;
+                    }).filter(function(el, idx, arr) {
+                        return !(arr[idx - 1] && arr[idx - 1].match(/\r\n$/) && el === '\n');
+                    });
+
+                    modified = mod.split(/^/m).map(function(el, idx, arr) {
+                        return (el[el.length - 1] === '\r' && arr[idx + 1] === '\n') ? el + '\n' : el;
+                    }).filter(function(el, idx, arr) {
+                        return !(arr[idx - 1] && arr[idx - 1].match(/\r\n$/) && el === '\n');
+                    });
                     break;
             }
         }
@@ -148,6 +164,11 @@ module.exports = {
         if (options.trimWhitespace) {
             original = trimWhitespace(original);
             modified = trimWhitespace(modified);
+        }
+
+        if (options.ignoreLineEndings) {
+            original = removeWhiteSpace(original);
+            modified = removeWhiteSpace(modified);
         }
 
         return buildDiff(original, modified, options.groups);

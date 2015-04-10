@@ -80,7 +80,8 @@ var result = diff.buildDiff(originalText, modifiedText, {
   scope: 'lines',
   isArray: false,
   groups: false,
-  trimWhitespace: false
+  trimWhitespace: false,
+  ignoreLineEndings: false
 });
 ```
 
@@ -90,7 +91,7 @@ Specifies which parts of the text block to compare.
 
 *Valid scopes:*
 
-* `'lines'`: Check for differences in the lines of the text. (separates by `/\n|\r\n|\r/`)
+* `'lines'`: Check for differences in the lines of the text. (separates by `/^/m`)
 * `'words'`: Check for differences in the words of the text. (separates by `/\s/`)
 * `'chars'`: Check for differences in the characters of the text. (separates by `''`)
 
@@ -124,6 +125,23 @@ var result = diff.buildDiff(noWhitespace, whitespace, {
 });
 
 // result will show no difference between these two text blocks.
+```
+
+#### ignoreLineEndings: Boolean (default: false)
+
+Specifies whether or not to include line endings in the text comparison.
+
+*Example:*
+
+```javascript
+var original = "some text\n";
+var modified = "some text";
+
+var result = diff.buildDiff(original, modified, {
+    ignoreWhiteSpace: true
+});
+
+// result will show no difference between these two blocks.
 ```
 
 #### groups: boolean (default: true)

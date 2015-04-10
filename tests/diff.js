@@ -94,45 +94,6 @@ describe('super-diff', function() {
             ]);
         });
 
-        it('lines', function() {
-            var orig = 'words to diff\r\nanother line to diff';
-            var mod = 'word to not diff\nanother line to diff\ra third line';
-
-            var res = diff.buildDiff(orig, mod);
-
-            expect(res.added()).to.eql([
-                {
-                    value: 'word to not diff',
-                    added: true,
-                    originalPos: -1,
-                    newPos: 0
-                }, {
-                    value: 'a third line',
-                    added: true,
-                    originalPos: -1,
-                    newPos: 2
-                }
-            ]);
-
-            expect(res.removed()).to.eql([
-                {
-                    value: 'words to diff',
-                    removed: true,
-                    originalPos: 0,
-                    newPos: -1
-                }
-            ]);
-
-            expect(res.similar()).to.eql([
-                {
-                    value: 'another line to diff',
-                    similar: true,
-                    originalPos: 1,
-                    newPos: 1
-                }
-            ]);
-        });
-
         it('arrays', function() {
             var res = diff.buildDiff(
                 ['first', 'second', 'third'],
@@ -181,8 +142,8 @@ describe('super-diff', function() {
         });
     });
 
-    describe('trimWhitespace', function() {
-        it('true', function() {
+    describe('whitespace', function() {
+        it('trimWhitespace: true', function() {
             var orig = ['first', 'second', 'third'];
             var mod = ['  first', 'second   ', 'thid'];
 
@@ -224,7 +185,7 @@ describe('super-diff', function() {
             ]);
         });
 
-        it('false', function() {
+        it('trimWhitespace: false', function() {
             var orig = ['first', 'second', 'third'];
             var mod = ['  first', 'second   ', 'thid'];
 
@@ -271,6 +232,103 @@ describe('super-diff', function() {
             ]);
 
             expect(res.similar()).to.eql([]);
+        });
+
+        it('ignoreLineEndings: true', function() {
+            // Need to load files in order to get /^/m to match line breaks
+            var orig = fs.readFileSync(path.join(__dirname, 'test-file1.txt'), 'UTF-8');
+            var mod = fs.readFileSync(path.join(__dirname, 'test-file2.txt'), 'UTF-8');
+
+            var res = diff.buildDiff(orig, mod, {
+                ignoreLineEndings: true
+            });
+
+            expect(res.added()).to.eql([
+                {
+                    value: 'different line',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 1
+                }, {
+                    value: 'added line',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 3
+                }
+            ]);
+
+            expect(res.removed()).to.eql([
+                {
+                    value: 'second line',
+                    removed: true,
+                    originalPos: 1,
+                    newPos: -1
+                }
+            ]);
+
+            expect(res.similar()).to.eql([
+                {
+                    value: 'first line',
+                    similar: true,
+                    originalPos: 0,
+                    newPos: 0
+                }, {
+                    value: 'third line',
+                    similar: true,
+                    originalPos: 2,
+                    newPos: 2
+                }
+            ]);
+        });
+
+        it('ignoreLineEndings: false', function() {
+            // Need to load files in order to get /^/m to match line breaks
+            var orig = fs.readFileSync(path.join(__dirname, 'test-file1.txt'), 'UTF-8');
+            var mod = fs.readFileSync(path.join(__dirname, 'test-file2.txt'), 'UTF-8');
+
+            var res = diff.buildDiff(orig, mod);
+
+            expect(res.added()).to.eql([
+                {
+                    value: 'different line\r\n',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 1
+                }, {
+                    value: 'third line\r\n',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 2
+                }, {
+                    value: 'added line',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 3
+                }
+            ]);
+
+            expect(res.removed()).to.eql([
+                {
+                    value: 'second line\r\n',
+                    removed: true,
+                    originalPos: 1,
+                    newPos: -1
+                }, {
+                    value: 'third line',
+                    removed: true,
+                    originalPos: 2,
+                    newPos: -1
+                }
+            ]);
+
+            expect(res.similar()).to.eql([
+                {
+                    value: 'first line\r\n',
+                    similar: true,
+                    originalPos: 0,
+                    newPos: 0
+                }
+            ]);
         });
     });
 
