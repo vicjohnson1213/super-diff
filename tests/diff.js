@@ -340,4 +340,39 @@ describe('super-diff', function() {
             ]);
         });
     });
+
+    describe('miscellaneous', function() {
+        it('should compute removals before additions', function() {
+            var original = ['first', 'second', 'third'];
+            var modified = ['first', 'different', 'third'];
+
+            var result = diff.buildDiff(original, modified, {
+                isArray: true
+            });
+
+            expect(result.diff).to.eql([
+                {
+                    value: 'first',
+                    similar: true,
+                    originalPos: 0,
+                    newPos: 0
+                }, {
+                    value: 'second',
+                    removed: true,
+                    originalPos: 1,
+                    newPos: -1
+                }, {
+                    value: 'different',
+                    added: true,
+                    originalPos: -1,
+                    newPos: 1
+                }, {
+                    value: 'third',
+                    similar: true,
+                    originalPos: 2,
+                    newPos: 2
+                }
+            ]);
+        });
+    });
 });
