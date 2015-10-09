@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+var expect = require('expect.js'),
     diff = require('../diff.js'),
     fs = require('fs'),
     path = require('path'),

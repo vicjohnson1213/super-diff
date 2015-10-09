@@ -2,6 +2,8 @@
   "name": "super-diff",
   "version": "0.0.1",
   "description": "A javascrirpt text diff tool built for node.",
+  "author": "Victor Johnson <vicjohnson1213@gmail.com>",
+  "license": "MIT",
   "main": "diff.js",
   "keywords": [
     "diff",
@@ -10,10 +12,10 @@
     "difference"
   ],
   "scripts": {
-    "test": "grunt test"
+    "test": "mocha --recursive -R dot",
+    "cov": "istanbul cover _mocha -- --recursive -R nyan",
+    "covo": "istanbul cover _mocha -- --recursive -R nyan && open coverage/lcov-report/index.html"
   },
-  "author": "Victor Johnson",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/vicjohnson1213/super-diff"
@@ -22,18 +24,8 @@
     "merge": "^1.2.0"
   },
   "devDependencies": {
-    "blanket": "^1.1.6",
-    "chai": "^2.2.0",
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.11.1",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-test": "^0.12.7",
-    "mocha": "^2.2.1",
-    "travis-cov": "^0.2.5"
-  },
-  "config": {
-    "travis-cov": {
-      "threshold": 95
-    }
+    "expect.js": "^0.3.1",
+    "istanbul": "^0.3.22",
+    "mocha": "^2.2.1"
   }
 }
