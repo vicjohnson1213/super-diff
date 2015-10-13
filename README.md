@@ -181,9 +181,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 #### Running unit tests:
 
-running `grunt test` will run all of the unit tests inside the `tests/` directory. For convenience, I have added a `grunt watch` task that will run all unit tests each time a test or source file is changed.
-
-I am striving to keep code coverage at 100% and linting errors to 0. For that reason, the unit tests are configured to fail on any coverage lower than 95% or on any linting errors.
+running `npm test` will run all of the unit tests inside the `tests/` directory.  You can also generate a coverage report using `npm run cov` or run and open the coverage report using `npm run covo`.
 
 ## License
 
