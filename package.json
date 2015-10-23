@@ -1,6 +1,6 @@
 {
   "name": "super-diff",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A javascrirpt text diff tool built for node.",
   "author": "Victor Johnson <vicjohnson1213@gmail.com>",
   "license": "MIT",
